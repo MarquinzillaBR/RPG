@@ -396,9 +396,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             listaPersonagensUl.appendChild(item);
         });
+        
+        // Dispara um evento informando que a lista de fichas foi carregada
+        const event = new Event('listaFichasCarregada');
+        document.dispatchEvent(event);
     }
-
-    // --- Funções Auxiliares ---
+    
+    // Função para mostrar notificações na tela
     function mostrarNotificacao(mensagem, tipo = 'sucesso') {
         // Remove notificações existentes
         const notificacaoExistente = document.querySelector('.notificacao');
@@ -704,6 +708,292 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa a lista de itens
     renderizarItens();
     
-    // Tenta carregar a ficha salva ao iniciar
+        // Tenta carregar a ficha salva ao iniciar
     // carregarFicha();
+    
+    // Atualiza o estado do botão de batalha
+    atualizarEstadoBotaoBatalha();
+    
+    // Adiciona o evento de clique no botão de batalha
+    btnBatalha.addEventListener('click', iniciarBatalha);
+    
+    // Adiciona evento para atualizar o botão quando a lista de personagens for carregada
+    document.addEventListener('listaFichasCarregada', function() {
+        atualizarEstadoBotaoBatalha();
+    });
 });
+
+// Função para atualizar o estado do botão de batalha
+function atualizarEstadoBotaoBatalha() {
+    const fichas = [];
+    
+    // Conta quantas fichas existem
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(KEY_STORAGE_PREFIX)) {
+            try {
+                const ficha = JSON.parse(localStorage.getItem(key));
+                if (ficha && ficha.id) {
+                    fichas.push(ficha);
+                }
+            } catch (e) {
+                console.error('Erro ao carregar ficha:', key, e);
+            }
+        }
+    }
+    
+    // Habilita o botão se houver pelo menos 2 personagens
+    const btnBatalha = document.getElementById('btn-batalha');
+    if (fichas.length >= 2) {
+        btnBatalha.disabled = false;
+        btnBatalha.textContent = 'Batalha';
+    } else {
+        btnBatalha.disabled = true;
+        btnBatalha.textContent = 'Batalha (2+ personagens necessários)';
+    }
+}
+
+// Função para exibir a tela de seleção de personagens para batalha
+function exibirSelecaoBatalha(fichas) {
+    // Cria o container da seleção de batalha
+    const container = document.createElement('div');
+    container.className = 'batalha-container';
+    container.innerHTML = `
+        <h2>Selecione os Personagens para a Batalha</h2>
+        <div class="selecao-personagens">
+            <div class="time time-1">
+                <h3>Time 1</h3>
+                <div class="lista-selecao"></div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="time time-2">
+                <h3>Time 2</h3>
+                <div class="lista-selecao"></div>
+            </div>
+        </div>
+        <button id="iniciar-batalha" class="menu-button" disabled>Iniciar Batalha</button>
+        <button id="cancelar-batalha" class="menu-button btn-secundario">Cancelar</button>
+    `;
+    
+    // Adiciona o container à página
+    const mainContainer = document.querySelector('.main-container');
+    mainContainer.appendChild(container);
+    
+    // Preenche as listas de seleção
+    const time1Lista = container.querySelector('.time-1 .lista-selecao');
+    const time2Lista = container.querySelector('.time-2 .lista-selecao');
+    const btnIniciar = container.querySelector('#iniciar-batalha');
+    
+    // Variáveis para armazenar os personagens selecionados
+    let time1 = [];
+    let time2 = [];
+    
+    // Função para criar um item de personagem na lista de seleção
+    function criarItemSelecao(ficha, time) {
+        const item = document.createElement('div');
+        item.className = 'item-selecao';
+        item.dataset.id = ficha.id;
+        item.innerHTML = `
+            <input type="checkbox" id="time${time}-${ficha.id}">
+            <label for="time${time}-${ficha.id}">${ficha.nome} (Nível ${ficha.nivel})</label>
+        `;
+        
+        // Adiciona o evento de clique
+        const checkbox = item.querySelector('input');
+        checkbox.addEventListener('change', (e) => {
+            const targetList = time === 1 ? time1 : time2;
+            const otherList = time === 1 ? time2 : time1;
+            
+            // Remove de qualquer outra seleção
+            if (otherList.includes(ficha.id)) {
+                const otherCheckbox = document.querySelector(`#time${time === 1 ? 2 : 1}-${ficha.id}`);
+                if (otherCheckbox) otherCheckbox.checked = false;
+                const index = otherList.indexOf(ficha.id);
+                if (index > -1) otherList.splice(index, 1);
+            }
+            
+            // Adiciona ou remove da lista atual
+            if (e.target.checked) {
+                targetList.push(ficha.id);
+            } else {
+                const index = targetList.indexOf(ficha.id);
+                if (index > -1) targetList.splice(index, 1);
+            }
+            
+            // Habilita/desabilita o botão de iniciar batalha
+            btnIniciar.disabled = !(time1.length > 0 && time2.length > 0);
+        });
+        
+        return item;
+    }
+    
+    // Adiciona os personagens às listas de seleção
+    fichas.forEach(ficha => {
+        time1Lista.appendChild(criarItemSelecao(ficha, 1));
+        time2Lista.appendChild(criarItemSelecao(ficha, 2));
+    });
+    
+    // Adiciona o evento de clique no botão de iniciar batalha
+    btnIniciar.addEventListener('click', () => {
+        // Filtra as fichas selecionadas
+        const time1Fichas = fichas.filter(f => time1.includes(f.id));
+        const time2Fichas = fichas.filter(f => time2.includes(f.id));
+        
+        // Inicia a batalha
+        iniciarBatalhaSimulada(time1Fichas, time2Fichas);
+        
+        // Remove a tela de seleção
+        container.remove();
+    });
+    
+    // Adiciona o evento de clique no botão de cancelar
+    container.querySelector('#cancelar-batalha').addEventListener('click', () => {
+        container.remove();
+    });
+}
+
+// Função para simular uma batalha entre dois times
+function iniciarBatalhaSimulada(time1, time2) {
+    // Cria o container do log de batalha
+    const container = document.createElement('div');
+    container.className = 'batalha-log';
+    container.innerHTML = `
+        <h2>Batalha em Andamento</h2>
+        <div class="log-container"></div>
+        <button id="fechar-batalha" class="menu-button">Fechar</button>
+    `;
+    
+    // Adiciona o container à página
+    const mainContainer = document.querySelector('.main-container');
+    mainContainer.appendChild(container);
+    
+    const logContainer = container.querySelector('.log-container');
+    
+    // Função para adicionar uma mensagem ao log
+    function adicionarLog(mensagem) {
+        const elemento = document.createElement('div');
+        elemento.className = 'mensagem-batalha';
+        elemento.textContent = mensagem;
+        logContainer.appendChild(elemento);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+    
+    // Adiciona o evento de clique no botão de fechar
+    container.querySelector('#fechar-batalha').addEventListener('click', () => {
+        container.remove();
+    });
+    
+    // Inicia a simulação da batalha
+    adicionarLog('=== INÍCIO DA BATALHA ===');
+    adicionarLog(`Time 1 (${time1.map(p => p.nome).join(', ')}) vs Time 2 (${time2.map(p => p.nome).join(', ')})`);
+    
+    // Lógica simples de batalha por turnos
+    let turno = 1;
+    const maxTurnos = 5; // Limite de turnos para evitar loop infinito
+    
+    function executarTurno() {
+        if (turno > maxTurnos) {
+            adicionarLog('=== BATALHA EMPATADA ===');
+            adicionarLog('A batalha terminou em empate após o limite de turnos!');
+            return;
+        }
+        
+        adicionarLog(`\n--- TURNO ${turno} ---`);
+        
+        // Cada personagem do time 1 ataca um personagem aleatório do time 2
+        time1.forEach(atacante => {
+            if (time2.length === 0) return;
+            
+            const alvo = time2[Math.floor(Math.random() * time2.length)];
+            const dano = Math.max(1, Math.floor(Math.random() * 10) + 1); // Dano aleatório de 1 a 10
+            
+            adicionarLog(`${atacante.nome} ataca ${alvo.nome} causando ${dano} de dano!`);
+            
+            // Aplica o dano
+            if (!alvo.hp) alvo.hp = { atual: 10, maximo: 10 }; // Garante que o HP existe
+            alvo.hp.atual = Math.max(0, alvo.hp.atual - dano);
+            
+            // Verifica se o alvo foi derrotado
+            if (alvo.hp.atual <= 0) {
+                adicionarLog(`☠️ ${alvo.nome} foi derrotado!`);
+                time2 = time2.filter(p => p.id !== alvo.id);
+                
+                // Verifica se o time 2 foi derrotado
+                if (time2.length === 0) {
+                    adicionarLog('=== TIME 1 VENCEU A BATALHA! ===');
+                    return;
+                }
+            }
+        });
+        
+        // Se o time 2 ainda tiver personagens, eles contra-atacam
+        if (time2.length > 0) {
+            time2.forEach(atacante => {
+                if (time1.length === 0) return;
+                
+                const alvo = time1[Math.floor(Math.random() * time1.length)];
+                const dano = Math.max(1, Math.floor(Math.random() * 10) + 1);
+                
+                adicionarLog(`${atacante.nome} ataca ${alvo.nome} causando ${dano} de dano!`);
+                
+                // Aplica o dano
+                if (!alvo.hp) alvo.hp = { atual: 10, maximo: 10 };
+                alvo.hp.atual = Math.max(0, alvo.hp.atual - dano);
+                
+                // Verifica se o alvo foi derrotado
+                if (alvo.hp.atual <= 0) {
+                    adicionarLog(`☠️ ${alvo.nome} foi derrotado!`);
+                    time1 = time1.filter(p => p.id !== alvo.id);
+                    
+                    // Verifica se o time 1 foi derrotado
+                    if (time1.length === 0) {
+                        adicionarLog('=== TIME 2 VENCEU A BATALHA! ===');
+                        return;
+                    }
+                }
+            });
+        }
+        
+        // Se algum time foi derrotado, encerra a batalha
+        if (time1.length === 0 || time2.length === 0) {
+            return;
+        }
+        
+        // Próximo turno
+        turno++;
+        setTimeout(executarTurno, 1000); // Atraso de 1 segundo entre os turnos
+    }
+    
+    // Inicia o primeiro turno com um pequeno atraso
+    setTimeout(executarTurno, 500);
+}
+
+// Função para iniciar o processo de batalha
+function iniciarBatalha() {
+    // Primeiro, carrega a lista de personagens
+    const fichas = [];
+    
+    // Coleta todas as fichas do localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(KEY_STORAGE_PREFIX)) {
+            try {
+                const ficha = JSON.parse(localStorage.getItem(key));
+                if (ficha && ficha.id) {
+                    fichas.push(ficha);
+                }
+            } catch (e) {
+                console.error('Erro ao carregar ficha:', key, e);
+            }
+        }
+    }
+    
+    // Verifica se há personagens suficientes (deveria ser verdadeiro, já que o botão está habilitado)
+    if (fichas.length < 2) {
+        mostrarNotificacao('É necessário ter pelo menos 2 personagens para batalhar!', 'erro');
+        return;
+    }
+    
+    // Exibe a tela de seleção de personagens
+    exibirSelecaoBatalha(fichas);
+}
