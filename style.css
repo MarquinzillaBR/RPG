@@ -1,0 +1,548 @@
+/* Estilos Gerais */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #222;
+    color: #eee;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Estilos do Menu Principal */
+.menu-container {
+    background-color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.menu-container h1 {
+    color: #4CAF50;
+    margin-bottom: 40px;
+    font-size: 2em;
+}
+
+.menu-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin: 10px auto;
+    display: block;
+    width: 80%;
+    max-width: 300px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.menu-button:hover:not(:disabled) {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Estilos da Lista de Fichas */
+.lista-fichas-container {
+    background-color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+.lista-fichas-container h2 {
+    text-align: center;
+    color: #8BC34A;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#lista-personagens {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+#lista-personagens li {
+    background-color: #444;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #555;
+    transition: all 0.2s ease;
+}
+
+#lista-personagens li:hover {
+    background-color: #4a4a4a;
+    transform: translateX(5px);
+}
+
+#lista-personagens li span {
+    flex-grow: 1;
+    font-size: 1.1em;
+    color: #eee;
+}
+
+#lista-personagens li .carregar-ficha-btn,
+#lista-personagens li .excluir-ficha-lista-btn {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-left: 10px;
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+#lista-personagens li .excluir-ficha-lista-btn {
+    background-color: #d9534f;
+}
+
+#lista-personagens li .carregar-ficha-btn:hover {
+    background-color: #4cae4c;
+    transform: translateY(-1px);
+}
+
+#lista-personagens li .excluir-ficha-lista-btn:hover {
+    background-color: #c9302c;
+    transform: translateY(-1px);
+}
+
+/* Estilos da Ficha de Personagem */
+.ficha-container {
+    background-color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+.ficha-container h1 {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.secao {
+    margin-bottom: 25px;
+    background-color: #3a3a3a;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+}
+
+h2 {
+    color: #8BC34A;
+    border-bottom: 2px solid #555;
+    padding-bottom: 8px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+.campo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.campo label {
+    width: 140px;
+    font-weight: bold;
+    margin-right: 15px;
+    color: #ddd;
+    font-size: 1em;
+}
+
+.campo input[type="text"],
+.campo input[type="number"],
+textarea {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #444;
+    color: #eee;
+    font-size: 1em;
+    transition: all 0.2s ease;
+}
+
+.campo input[type="text"]:focus,
+.campo input[type="number"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.campo input[type="number"] {
+    max-width: 80px;
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 100px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.ficha-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ficha-actions button {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+#salvarFicha {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#salvarFicha:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+#excluirFicha {
+    background-color: #d9534f;
+    color: white;
+}
+
+#excluirFicha:hover {
+    background-color: #c9302c;
+    transform: translateY(-2px);
+}
+
+#voltarAoMenuFicha {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Estilos da Seção de Explicação */
+#secao-explicacao {
+    background-color: #2a2a2a;
+    border-left: 4px solid #4CAF50;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0 5px 5px 0;
+    display: none; /* Garante que comece oculto */
+}
+
+.explicacao-texto {
+    font-style: italic;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.explicacao-texto h3 {
+    color: #4CAF50;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.explicacao-texto p {
+    margin: 5px 0;
+}
+
+/* Estilos do Inventário */
+.secao-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-adicionar {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+.btn-adicionar:hover {
+    background-color: #45a049;
+}
+
+.lista-itens {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-inventario {
+    background-color: #2a2a2a;
+    border-left: 3px solid #4CAF50;
+    padding: 12px 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.item-inventario:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.item-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.item-nome {
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 0;
+}
+
+.item-tipo {
+    font-size: 0.8em;
+    background-color: #333;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #ccc;
+}
+
+.item-detalhes {
+    font-size: 0.9em;
+    color: #bbb;
+    margin: 5px 0;
+}
+
+.item-efeito {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #999;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #333;
+}
+
+/* Estilos do Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: auto;
+}
+
+.modal-conteudo {
+    background-color: #1e1e1e;
+    margin: 10% auto;
+    padding: 25px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.fechar-modal {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.fechar-modal:hover {
+    color: #fff;
+}
+
+.form-grupo {
+    margin-bottom: 15px;
+}
+
+.form-grupo label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ddd;
+}
+
+.form-grupo input[type="text"],
+.form-grupo textarea,
+.form-grupo select {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #2a2a2a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1em;
+}
+
+.form-grupo textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+.form-linha {
+    display: flex;
+    gap: 15px;
+}
+
+.form-linha .form-grupo {
+    flex: 1;
+}
+
+.form-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-primario {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn-primario:hover {
+    background-color: #45a049;
+}
+
+.btn-secundario {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn-secundario:hover {
+    background-color: #5a6268;
+}
+
+#voltarAoMenuFicha:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 10px;
+    }
+    
+    .menu-container,
+    .lista-fichas-container,
+    .ficha-container {
+        padding: 20px 15px;
+        margin: 10px auto;
+    }
+    
+    .menu-button {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .campo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .campo label {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+    
+    .campo input[type="text"],
+    .campo input[type="number"],
+    textarea {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .ficha-actions {
+        flex-direction: column;
+    }
+    
+    .ficha-actions button {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    #lista-personagens li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #lista-personagens li .carregar-ficha-btn,
+    #lista-personagens li .excluir-ficha-lista-btn {
+        width: 100%;
+        margin: 5px 0 0 0;
+        text-align: center;
+    }
+}

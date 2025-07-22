@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Fichas de RPG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Menu Principal -->
+        <div id="menu-principal" class="menu-container">
+            <h1>Gerenciador de Fichas de RPG</h1>
+            <button id="btn-novo-personagem" class="menu-button">Novo Personagem</button>
+            <button id="btn-carregar-personagem" class="menu-button">Carregar Personagem</button>
+            <button id="btn-batalha" class="menu-button" disabled>Batalha (Em Breve)</button>
+        </div>
+
+        <!-- Lista de Fichas -->
+        <div id="lista-fichas" class="lista-fichas-container hidden">
+            <h2>Fichas Salvas</h2>
+            <ul id="lista-personagens"></ul>
+            <button id="btn-voltar-menu" class="menu-button">Voltar ao Menu</button>
+        </div>
+
+        <!-- Ficha de Personagem -->
+        <div id="ficha-personagem" class="ficha-container hidden">
+            <h1>Ficha de Personagem</h1>
+
+            <div class="secao">
+                <h2>Informações Básicas</h2>
+                <div class="campo">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" placeholder="Nome do Personagem">
+                </div>
+                <div class="campo">
+                    <label for="raca">Raça:</label>
+                    <select id="raca" class="form-select">
+                        <option value="">Selecione uma raça</option>
+                        <option value="humano">Humano</option>
+                        <option value="anao">Anão</option>
+                        <option value="elfo">Elfo</option>
+                        <option value="orc">Orc</option>
+                        <option value="halfling">Halfling</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="classe">Classe:</label>
+                    <select id="classe" class="form-select">
+                        <option value="">Selecione uma classe</option>
+                        <option value="guerreiro">Guerreiro</option>
+                        <option value="mago">Mago</option>
+                        <option value="ladino">Ladino</option>
+                        <option value="clérigo">Clérigo</option>
+                        <option value="bárbaro">Bárbaro</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="nivel">Nível:</label>
+                    <input type="number" id="nivel" min="1" value="1">
+                </div>
+            </div>
+
+            <div class="secao" id="secao-explicacao" style="display: none;">
+                <h2>Breve Explicação</h2>
+                <div id="explicacao-conteudo" class="explicacao-texto">
+                    <!-- O conteúdo será preenchido dinamicamente pelo JavaScript -->
+                </div>
+            </div>
+
+            <div class="secao">
+                <h2>Atributos</h2>
+                <div class="campo">
+                    <label for="forca">Força:</label>
+                    <input type="number" id="forca" min="0" value="10">
+                </div>
+                <div class="campo">
+                    <label for="destreza">Destreza:</label>
+                    <input type="number" id="destreza" min="0" value="10">
+                </div>
+                <div class="campo">
+                    <label for="constituicao">Constituição:</label>
+                    <input type="number" id="constituicao" min="0" value="10">
+                </div>
+                <div class="campo">
+                    <label for="inteligencia">Inteligência:</label>
+                    <input type="number" id="inteligencia" min="0" value="10">
+                </div>
+                <div class="campo">
+                    <label for="sabedoria">Sabedoria:</label>
+                    <input type="number" id="sabedoria" min="0" value="10">
+                </div>
+                <div class="campo">
+                    <label for="carisma">Carisma:</label>
+                    <input type="number" id="carisma" min="0" value="10">
+                </div>
+            </div>
+
+            <div class="secao">
+                <h2>Pontos de Vida</h2>
+                <div class="campo">
+                    <label for="hpAtual">HP Atual:</label>
+                    <input type="number" id="hpAtual" min="0" value="10">
+                </div>
+                <div class="campo">
+                    <label for="hpMaximo">HP Máximo:</label>
+                    <input type="number" id="hpMaximo" min="1" value="10">
+                </div>
+            </div>
+
+            <div class="secao">
+                <div class="secao-cabecalho">
+                    <h2>Inventário</h2>
+                    <button id="btn-adicionar-item" class="btn-adicionar">+ Adicionar Item</button>
+                </div>
+                <div id="lista-itens" class="lista-itens">
+                    <!-- Itens serão adicionados aqui dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Modal para adicionar/editar itens -->
+            <div id="modal-item" class="modal">
+                <div class="modal-conteudo">
+                    <span class="fechar-modal">&times;</span>
+                    <h3 id="modal-titulo">Adicionar Item</h3>
+                    <form id="form-item">
+                        <input type="hidden" id="item-id">
+                        <div class="form-grupo">
+                            <label for="item-nome">Nome do Item:</label>
+                            <input type="text" id="item-nome" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="item-descricao">Descrição:</label>
+                            <textarea id="item-descricao" rows="3"></textarea>
+                        </div>
+                        <div class="form-linha">
+                            <div class="form-grupo">
+                                <label for="item-dano">Dano:</label>
+                                <input type="text" id="item-dano" placeholder="Ex: 1d6+2">
+                            </div>
+                            <div class="form-grupo">
+                                <label for="item-cura">Cura:</label>
+                                <input type="text" id="item-cura" placeholder="Ex: 1d8+1">
+                            </div>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="item-tipo">Tipo:</label>
+                            <select id="item-tipo">
+                                <option value="ativo">Ativo</option>
+                                <option value="passivo">Passivo</option>
+                            </select>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="item-efeito">Efeito/Passiva:</label>
+                            <textarea id="item-efeito" rows="2" placeholder="Descreva o efeito ou passiva do item"></textarea>
+                        </div>
+                        <div class="form-acoes">
+                            <button type="button" id="btn-cancelar-item" class="btn-secundario">Cancelar</button>
+                            <button type="submit" class="btn-primario">Salvar Item</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="ficha-actions">
+                <button id="salvarFicha">Salvar Ficha</button>
+                <button id="excluirFicha">Excluir Ficha</button>
+                <button id="voltarAoMenuFicha">Voltar ao Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
